@@ -141,19 +141,41 @@
 			)
 	)
 )
-
+(defun nodeloc (a diccionario)
+	(let (
+		(i (get-key a diccionario))
+		(j (get-key (reverse a) diccionario))
+		)
+		(if (null i)
+			j
+			i
+		))
+)
+(defun router (i f grafo diccionario)
+		( let (
+			(caminos (dfs i nil f grafo 0))
+			)
+		(if (null caminos)
+			(print "No hay camino posible")
+			(mapcar (lambda (x) (describe_path (make_path x diccionario) 1) )
+					(keep-best caminos )
+			)
+		)
+		)
+ )
 ;;----- Main
 (defun GPS (desde hasta grafo diccionario)
 	( let (
-		(i (get-key desde diccionario) )
-		(f (get-key hasta diccionario) )
-		)	
-	(mapcar (lambda (x) (describe_path (make_path x diccionario) 1) )
-	 		(keep-best 
-	 			(dfs i nil f grafo 0)
-	 		)
+		(i  (nodeloc desde diccionario))
+		(f  (nodeloc hasta diccionario))
+		)		
+	(if (eq i f) 
+		(print "Ya estas en el destino")
+		(router i f grafo diccionario)
 	)
 	)
 )
 
 (print (GPS '(PaseoColon Independencia) '(Defensa Belgrano) grafo diccionario))
+
+
