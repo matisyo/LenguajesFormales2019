@@ -54,7 +54,7 @@
 
 (defun keep-best (m)
 	( let
-		 (
+		(
 		( minimo (car (reduce (lambda (x y) (if (< (car x)  (car y) ) x y) )  m )))
 		)
 		 
@@ -64,7 +64,18 @@
 		)
 	)
 )
-
+(defun keep-worst (m)
+	( let
+		(
+		( maximo (car (reduce (lambda (x y) (if (> (car x)  (car y) ) x y) )  m )))
+		)
+		 
+		(reduce
+			(lambda (x y) (append x y))
+			(mapcar (lambda (x) (if (equal (car x) maximo) (list (cdr x)) nil ) ) m )
+		)
+	)
+)
 
 ;----- Mostrar Recorrido
 (defun in (a l)
@@ -163,6 +174,19 @@
 		)
 		)
  )
+
+(defun router_max_min (i f grafo diccionario)
+		( let (
+			(caminos (dfs i nil f grafo 0))
+			)
+		(if (null caminos)
+			(format t "No hay camino posible")
+			(car (mapcar (lambda (x) (describe_path (make_path x diccionario) 1) )
+					(list (car (keep-best caminos )) (car (keep-worst caminos)) )
+			))
+		)
+		)
+ )
 ;;----- Main
 (defun GPS (desde hasta grafo diccionario)
 	( let (
@@ -171,7 +195,12 @@
 		)		
 	(if (eq i f) 
 		(format t "Ya estas en el destino")
-		(router i f grafo diccionario)
+		;(router i f grafo diccionario)
+		(router_max_min i f grafo diccionario)
 	)
 	)
 )
+
+(print (GPS '(PaseoColon Independencia) '(Balcarce Belgrano) grafo diccionario ))
+
+	

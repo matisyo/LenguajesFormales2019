@@ -32,6 +32,7 @@
 			;Un solo parametro
 
 			((eq fn 'car)     (car     (car lae) ))
+			((eq fn 'cadr)     (cadr     (car lae) ))
 			((eq fn 'cdr)     (cdr     (car lae) ))
 			((eq fn 'not)     (not     (car lae) ))
 			((eq fn 'atom)    (atom    (car lae) ))
@@ -66,8 +67,23 @@
 		(evaluar (caddr fn) (ampliar (cadr fn) lae args))
 	)
 )
-
-
+(defun while-cycle (p f e args)
+	(if
+		(evaluar 
+			(append (list p)  (list 'e) )  
+			(append (list 'e e) args)
+		)
+		(while-cycle p f 
+			(evaluar 
+				(append (list f)  (list 'e) )  
+				(append (list 'e e) args)
+			)
+			args
+		)
+		e
+	)
+	
+	)
 
 (defun evaluar (fn args)
 	(if (atom fn) (if (null fn) 
@@ -81,26 +97,28 @@
 			((eq (car fn) 'if) (if (null (evaluar (cadr fn) args)) (evaluar (cadddr fn) args) (evaluar (caddr fn) args)))
 			((eq (car fn) 'lambda) fn)
 			((eq (car fn) 'cond) (micond (cdr fn ) args ) )
-		
+			((eq (car fn) 'while) (while-cycle 									
+									(cadr fn)
+									(caddr fn)
+									(evaluar (cadddr fn) args)
+									args))
+	
+			
+			
 			(T (aplicar (car fn) (mapcar (lambda (x) (evaluar x args)) (cdr fn)) args))
 		)
 	)
 )
 
-(print (evaluar '(mapcar 'union '((a v e)(s e a)) '((m a s)(m e n o s)))
- '(union (lambda(x y)
- (if (null x) y
- (if (pertenece (car x)y) (union (cdr x)y)
- (cons (car x)(union (cdr x)y))
+(print (list 'resultado
+(evaluar '(
+		while 
+		(lambda (x) (NoCero (car x)) ) 
+		(lambda (x) (list (Restar1 (car x)) (* (car x) (cadr x)) ) )
+		(car '( (5 1) 8 7) )
+		)
+		'(NoCero (lambda(x)(not(eq x 0))) 
+		Restar1 (lambda(n)(- n 1) ) )
+ )
 )
- )
- )
- pertenece (lambda (a li)
- (if (null li) nil
- (if (eq a (car li)) t
- (pertenece a (cdr li))
- )
- )
- )
- )
-))
+)
