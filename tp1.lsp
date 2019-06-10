@@ -156,10 +156,10 @@
 			(caminos (dfs i nil f grafo 0))
 			)
 		(if (null caminos)
-			(print "No hay camino posible")
-			(mapcar (lambda (x) (describe_path (make_path x diccionario) 1) )
+			(format t "No hay camino posible")
+			(car (mapcar (lambda (x) (describe_path (make_path x diccionario) 1) )
 					(keep-best caminos )
-			)
+			))
 		)
 		)
  )
@@ -170,12 +170,8 @@
 		(f  (nodeloc hasta diccionario))
 		)		
 	(if (eq i f) 
-		(print "Ya estas en el destino")
+		(format t "Ya estas en el destino")
 		(router i f grafo diccionario)
 	)
 	)
 )
-
-(print (GPS '(PaseoColon Independencia) '(Defensa Belgrano) grafo diccionario))
-
-

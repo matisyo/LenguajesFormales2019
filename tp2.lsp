@@ -40,6 +40,7 @@
 )
 
 (defun evaluar (fn args)
+	(print (list 'evaluar fn))
 	(if (atom fn) (if (null fn) nil (if (numberp fn) fn (get-value fn args))  )		
 		(cond
 		((eq (car fn) 'QUOTE) (cadr fn))
@@ -88,3 +89,22 @@
 		)
 	)
 )
+
+
+(print (evaluar '(mapcar 'union '((a v e)(s e a)) '((m a s)(m e n o s)))
+ '(union (lambda(x y)
+ (if (null x) y
+ (if (pertenece (car x)y) (union (cdr x)y)
+ (cons (car x)(union (cdr x)y))
+)
+ )
+ )
+ pertenece (lambda (a li)
+ (if (null li) nil
+ (if (eq a (car li)) t
+ (pertenece a (cdr li))
+ )
+ )
+ )
+ )
+))
